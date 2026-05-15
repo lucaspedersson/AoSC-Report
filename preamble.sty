@@ -1,6 +1,5 @@
-%---------------------------PREAMBLE
 \usepackage[margin=2.0cm]{geometry}
-\usepackage{amsmath,amssymb}            %a fairly generic package for mathematical output
+\usepackage{mathtools,amssymb,amsthm}            %a fairly generic package for mathematical output
 %\usepackage{a4wide}                    %stretch the page margins
 \usepackage{fancyhdr}                   %to customise the header and footer
 %\usepackage{pxfonts}                   %use my usual font style
@@ -12,7 +11,6 @@
 \usepackage{enumerate}                  %gives the enumerate environment an optional argument
 \usepackage[symbol*]{footmisc}          %for customising footnotes
 \usepackage{soul}                       %provides hyphenatable letter spacing, striking and so forth
-\usepackage{morefloats}
 \usepackage{appendix}                   %appendices
 \setcounter{tocdepth}{1}                %level of detail in the table of contents
 
@@ -29,6 +27,7 @@
 \usepackage{sidecap}                    %side captions
 \usepackage[cdot,mediumqspace,amssymb]{SIunits}
                                         %include SI units package
+\usepackage{float}
 
 %-----------LISTINGS PACKAGE AND CODE INCLUSION
 \usepackage{listings}        
@@ -53,32 +52,99 @@
 \let\endtocpage\relax                   %no new page after table of contents
 \usepackage{tocloft}
 
-%-----------MATH MODE SHORTCUTS
-\newcommand{\vect}[1]{\boldsymbol{#1}}                   %bold vector
-\newcommand{\mtx}[1]{\smash{\underline{\underline{\mathbf{#1}}}}} %matrix
-\let\vaccent=\v                                          %rename builtin command \v{} to \vaccent{}
-\renewcommand{\v}[1]{\ensuremath{\mathbf{#1}}}           %for vectors
-\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}} %for vectors of Greek letters
-\newcommand{\uv}[1]{\ensuremath{\mathbf{\hat{#1}}}}      %for unit vector
-\newcommand{\abs}[1]{\left| #1 \right|}                  %for absolute value
-\newcommand{\avg}[1]{\left< #1 \right>}                  %for average
-\let\underdot=\d                                         %rename builtin command \d{} to \underdot{}
-\newcommand{\deriv}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}                %for derivatives
-\newcommand{\dd}[2]{\frac{\mathrm{d}^2 #1}{\mathrm{d} #2^2}}               %for double derivatives
-\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}     %for partial derivatives
-\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}}%for double partial derivatives
-\newcommand{\ket}[1]{| #1 \rangle}                       %for Dirac bras
-\newcommand{\bra}[1]{\langle #1 |}                       %for Dirac kets
-\newcommand{\braket}[2]{\langle #1 \vphantom{#2} | #2 \vphantom{#1} \rangle}                                   
-                                                         %for Dirac brackets
-\newcommand{\matrixel}[3]{\left< #1 \vphantom{#2#3} \right| #2 \left| #3 \vphantom{#1#2} \right>}
-                                                         %for Dirac matrix elements
-\newcommand{\grad}[1]{\gv{\nabla} #1}                    %for gradient
-\let\divsymb=\div                                        %rename builtin command \div to \divsymb
-\renewcommand{\div}[1]{\gv{\nabla} \cdot #1}             %for divergence
-\newcommand{\curl}[1]{\gv{\nabla} \times #1}             %for curl
-\newcommand{\sch}{Schr$\ddot{\rm o}$dinger }
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+%-----------MATH MODE SHORTCUTS
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bS}{\mathbb{S}}
+\newcommand{\bL}{\mathbb{L}}
+\newcommand{\bE}{\mathbb{E}}
+\newcommand{\bK}{\mathbb{K}}
+\newcommand{\bH}{\mathbb{H}}
+\newcommand{\bB}{\mathcal{B}}
+\newcommand{\Aut}[2][]{\text{Aut}_{#1}(#2)}
+\newcommand{\Gal}[2]{\text{Gal}(#1/#2)}
+\newcommand{\orb}{\mathcal{O}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\longmapsfrom}{\reflectbox{$\longmapsto$}}
+\newcommand{\func}[3]{#1 \colon #2 \longrightarrow #3}
+%\newcommand{\st}{\,\colon\;}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\hooklongrightarrow}{\lhook\joinrel\longrightarrow}
+\newcommand{\hooklongleftarrow}{\longleftarrow\joinrel\rhook}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\M}{\mathrm{M}}
+\newcommand{\SL}{\mathrm{SL}}
+\newcommand{\End}{\mathrm{End}}
+\newcommand{\llangle}{\langle\!\langle}
+\newcommand{\rrangle}{\rangle\!\rangle}
+\newcommand{\ind}{\boldsymbol{1}}
+
+\DeclarePairedDelimiter{\autongen}{\llangle}{\rrangle}
+\newcommand{\ngen}[1]{\autongen*{#1}}
+
+\DeclarePairedDelimiter{\autonorm}{\lVert}{\rVert}
+\newcommand{\norm}[1]{\autonorm*{#1}}
+
+\DeclarePairedDelimiter{\autoabs}{\lvert}{\rvert}
+\newcommand{\abs}[1]{\autoabs*{#1}}
+
+\DeclarePairedDelimiter\autobracket{(}{)}
+\newcommand{\brac}[1]{\autobracket*{#1}}
+
+\DeclarePairedDelimiter{\autoceil}{\lceil}{\rceil}
+\newcommand{\ceil}[1]{\autoceil*{#1}}
+
+\DeclarePairedDelimiter{\autofloor}{\lfloor}{\rfloor}
+\newcommand{\floor}[1]{\autofloor*{#1}}
+
+\DeclarePairedDelimiter{\autocurly}{\{}{\}}
+\newcommand{\curly}[1]{\autocurly*{#1}}
+
+\DeclarePairedDelimiter\autosq{[}{]}
+\newcommand{\sq}[1]{\autosq*{#1}}
+
+\DeclarePairedDelimiter\autohangle{\langle}{\rangle}
+\newcommand{\hangle}[1]{\autohangle*{#1}}
+
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\ran}{ran}
+\DeclareMathOperator{\res}{res}
+\DeclareMathOperator{\I}{I}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Norm}{N}
+\DeclareMathOperator{\Conf}{Conf}
+\DeclareMathOperator{\pr}{pr}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\linspan}{span}
+
+\DeclareMathOperator*{\bigast}{\ast}
+
+\theoremstyle{plain}
+\newtheorem*{claim}{Claim}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
 
 %-----------HYPERLINKS
 \usepackage{hyperref}
