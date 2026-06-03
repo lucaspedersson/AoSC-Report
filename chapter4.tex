@@ -1,4 +1,8 @@
 \chapter{Results}\label{ch:results}
+    \begin{remark}
+        I would like to pre-emptively apologise for the poor spacing of figures in what follows. 
+    \end{remark}
+
     We have generated in total nine hundred supersingular $\ell$-isogeny graphs $G_\ell^s(\F_{p^2})$. These cover three isogeny degrees, $\ell = 2,3,5$, and three hundred primes $p$, namely each of the first $300$ primes which are congruent to $1$ modulo $12$. These $300$ primes range from $13$ to $9973$, and therefore present a sample across several order of magnitude; this was chosen so as to get a sense for any scaling-related variation in observations.
 
     All resultant data can be found in CSV files, stored under the directory \verb|/data/results/| in the codebase. The following relevant experiments were conducted.
@@ -24,3 +28,263 @@
 
     \section{Visual isogeny graphs}
         Here is a selection of visualisations of the supersingular $\ell$-isogeny graphs we have produced, for varying $p$ and $\ell$. They have been rendered using Sage's native plotting functionality.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.4\linewidth]{figures/ssigraph_images/ssigraph_p97_l5.png}
+            \caption{Graph $G_\ell^s(\F_{p^2})$ where $p = 97$ and $\ell = 5$.}
+            \label{fig:ssigraph_p97_l5}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.4\linewidth]{figures/ssigraph_images/ssigraph_p193_l2.png}
+            \caption{Graph $G_\ell^s(\F_{p^2})$ where $p = 193$ and $\ell = 2$.}
+            \label{fig:ssigraph_p193_l2}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.4\linewidth]{figures/ssigraph_images/ssigraph_p409_l2.png}
+            \caption{Graph $G_\ell^s(\F_{p^2})$ where $p = 409$ and $\ell = 2$.}
+            \label{fig:ssigraph_p409_l2}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.4\linewidth]{figures/ssigraph_images/ssigraph_p709_l3.png}
+            \caption{Graph $G_\ell^s(\F_{p^2})$ where $p = 709$ and $\ell = 3$.}
+            \label{fig:ssigraph_p709_l3}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.4\linewidth]{figures/ssigraph_images/ssigraph_p853_l5.png}
+            \caption{Graph $G_\ell^s(\F_{p^2})$ where $p = 853$ and $\ell = 5$.}
+            \label{fig:ssigraph_p853_l5}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.4\linewidth]{figures/ssigraph_images/ssigraph_p2689_l3.png}
+            \caption{Graph $G_\ell^s(\F_{p^2})$ where $p = 2689$ and $\ell = 3$.}
+            \label{fig:ssigraph_p2689_l3}
+        \end{figure}
+    
+    \section{General graph structure}
+        We first observe that Property 1, describing the approximation $N_p \approx p/12$ where $N_p$ is the number of isomorphism classes of supersingular elliptic curves over $\F_{p^2}$, is clearly corroborated.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/spectral/vertices_vs_p.png}
+            \caption{$N_p$ plotted against $p$.}
+            \label{fig:vertices_vs_p}
+        \end{figure}
+
+        Indeed, the degree $\ell$ does not affect the value $N_p$, and this can be seen in Figure \ref{fig:vertices_vs_p}. A very clear linear relationship is visible.
+
+        It was verified that all isogeny graphs we produced were $(\ell+1)$-regular and connected, but since this is less amenable to visualisation, we will direct the reader to see \verb|spectral_results.csv| for confirmation if desired.
+
+    \section{Spectral analysis}
+
+        Recall that if $G_\ell^s(\F_{p^2})$ has adjacency matrix $A$ then the eigenvalues of $A$ can be arranged
+        \begin{equation*}
+            \ell + 1 = \abs{\lambda_1} \geq \abs{\lambda_2} \geq \cdots \geq \abs{\lambda_{n-1}} \geq \abs{\lambda_n} \geq -(\ell + 1).
+        \end{equation*}
+        Then, we see in Figure \ref{fig:lambda2_vs_p} that $\abs{\lambda_2}$ approaches the Ramanujan bound $\abs{\lambda_2} \leq 2\sqrt{\ell}$ with increasing $p$.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/spectral/lambda2_vs_p.png}
+            \caption{Values of $\abs{\lambda_2}$ plotted against $p$. Here, the three dotted lines correspond to each of the three Ramanujan bounds $2\sqrt{\ell}$ for $\ell = 2,3,5$.}
+            \label{fig:lambda2_vs_p}
+        \end{figure}
+
+        Indeed, the Ramanujan bound suggests that there should exist an inequality $\abs{\lambda_2}/2\sqrt{\ell} \leq 1$. To see this, we plot the \textit{`Ramanujan ratio'} $\abs{\lambda_2}/2\sqrt{\ell}$ against $p$ in Figure \ref{fig:ramanujan_ratio_vs_p}.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/spectral/ramanujan_ratio_vs_p.png}
+            \caption{Values of the Ramanujan ratio $\abs{\lambda_2}/2\sqrt{\ell}$ plotted against $p$.}
+            \label{fig:ramanujan_ratio_vs_p}
+        \end{figure}
+
+        As we see, there exists rapid convergence toward the ratio imposed by the Ramanujan bound. This is interesting because it suggests that not only is the Ramanujan bound true, but that it is a \textit{minimal} bound on $\abs{\lambda_2}$.
+
+        We finally observe in Figure \ref{fig:spectral_gap_vs_p} another quantity which is of great general interest in spectral graph theory, namely the \textit{spectral gap} $\abs{\lambda_1} - \abs{\lambda_2}$. For graphs $G_\ell^s(\F_{p^2})$, this is known to be equal to $(\ell+1) - \abs{\lambda_2}$.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/spectral/spectral_gap_vs_p.png}
+            \caption{Values of the spectral gap $(\ell+1) - \abs{\lambda_2}$ plotted against $p$.}
+            \label{fig:spectral_gap_vs_p}
+        \end{figure}
+
+        Here, we observe some interesting behaviour: while the spectral gap appears to decrease approximately monotonically for all $\ell \in \curly{2,3,5}$, we witness that larger $\ell$ seems to correspond with larger spectral gaps. In spectral graph theory, this is known to correspond with the quality of greater connectivity. Certainly, this coheres with the intuition that by increasing the number of edges in a regular graph, one should also increase connectivity. 
+
+        It is also interesting to make an observation in relation to the earlier plot of the Ramanujan ratio. Namely, our observations of the Ramanujan ratio suggest an asymptotic relation $\abs{\lambda_2} \approx 2\sqrt{\ell}$ as $p$ increases. This is to say that $\abs{\lambda_2}$ has a square-root relation with $\ell$. But, since the spectral gap is defined by $(\ell+1) - \abs{\lambda_2}$, it follows that we expect the relation between the spectral gap and $\ell$ to follow a curve
+        \begin{equation*}
+            f(\ell) = \ell - 2\sqrt{\ell} + 1
+        \end{equation*}
+        as $p$ increases. Or rather, we might conjecture on the basis of this empirical evidence that if we define the spectral gap $\spect(\ell,p) = \text{spectral gap of } G_\ell^s(\F_{p^2})$, we should expect to see that
+        \begin{equation*}
+            \lim_{p \to \infty} \spect(\ell,p) = f(\ell)
+        \end{equation*}
+        Here, $f$ is monotonically increasing for $\ell \geq 0$, and we therefore obtain analytic justification for the observation that increasing $\ell$ will tend to increase the spectral gap. This provides an alternative perspective on the increasing connectivity of $G_\ell^s(\F_{p^2})$ for large $\ell$.
+
+    \section{Exact mixing times}
+        Recall that $P_n \in \R^{N_p}$ describes the distribution of probabilities that a random walk beginning at some initial vertex on $G_\ell^s(\F_{p^2})$ will land on each other vertex after $n$ steps. Recall too that we have the analytical relation
+        \begin{equation*}
+            P_n = P_0 M^n \quad\text{for}\quad M = \frac{1}{\ell + 1}A,
+        \end{equation*}
+        with $A$ the adjacency matrix of $G_\ell^s(\F_{p^2})$ and $P_0$ the vector with $1$ in the entry corresponding to the initial vertex and $0$ in all other entries. Then, we can numerically quantify the convergence of $P_n$ to the uniform distribution $U$ for increasing $n$ using the total variation distance
+        \begin{equation*}
+            d_{TV}(P_n, U) = \frac{1}{2}\sum_{i=1}^{N_p} \abs{P_n(i) - \frac{1}{N_p}}
+        \end{equation*}
+        and the mixing time
+        \begin{equation*}
+            t_{\mix}(\varepsilon) = \min\curly{n \geq 0 \mid d_{\TV}(P_n, U) \leq \varepsilon},
+        \end{equation*}
+        where $\varepsilon > 0$. In our experiment, we have chosen to study the cases that $\varepsilon \in \curly{0.1, 0.05, 0.01}$.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/mixing/mixing_time_vs_p_eps0p1.png}
+            \caption{Mixing times $t_{\mix}(0.1)$ plotted against increasing $p$.}
+            \label{fig:mixing_time_vs_p_eps0p1}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/mixing/mixing_time_vs_p_eps0p05.png}
+            \caption{Mixing times $t_{\mix}(0.05)$ plotted against increasing $p$.}
+            \label{fig:mixing_time_vs_p_eps0p05}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/mixing/mixing_time_vs_p_eps0p01.png}
+            \caption{Mixing times $t_{\mix}(0.01)$ plotted against increasing $p$.}
+            \label{fig:mixing_time_vs_p_eps0p01}
+        \end{figure}
+
+        Figures \ref{fig:mixing_time_vs_p_eps0p1}, \ref{fig:mixing_time_vs_p_eps0p05} and \ref{fig:mixing_time_vs_p_eps0p01} appear to demonstrate something approximating a logarithmic relationship between mixing times and $p$, for all values $\ell$ and $\varepsilon$. Indeed, this observation is borne out by a result that mixing times should have asymptotic class $O(\log(p))$. Our empirical results demonstrate both the adherence to this asymptotic relation, as well as the large fluctuations that can occur locally, between nearby values $p$.
+
+        Since supersingular $\ell$-isogeny graphs have size $N_p$ growing linearly with $p$, one would expect in general that mixing times increase according to $p$. But, due to their strong connectivity properties, we see that this growth is slow---indeed logarithmically slow---which is to say that the number of steps required for random walks to approach uniformity does not increase quickly as $p$ increases. 
+        
+        We also see that mixing times are lower for larger $\ell$, which coheres again with our observation that a larger $\ell$ implies a greater number of edges over the same number of vertices. Indeed, this should produce a better connected graph, and therefore random walks should more quickly diffuse into uniformity.
+
+        Since we have that mixing times are given asymptotically by $O(\log(p))$, and that $p \approx N_p$, we should expect that by plotting the same mixing times against $\log(N_p)$ instead of $p$, we would witness a nearly linear relationship. This does appears to nearly follow, observing Figures \ref{fig:mixing_time_vs_log_vertices_eps0p1} \ref{fig:mixing_time_vs_log_vertices_eps0p05} and \ref{fig:mixing_time_vs_log_vertices_eps0p01}, excepting the noise we already observed.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/mixing/mixing_time_vs_log_vertices_eps0p1.png}
+            \caption{Mixing times $t_{\mix}(0.1)$ plotted against increasing $\log(N_p)$.}
+            \label{fig:mixing_time_vs_log_vertices_eps0p1}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/mixing/mixing_time_vs_log_vertices_eps0p05.png}
+            \caption{Mixing times $t_{\mix}(0.05)$ plotted against increasing $\log(N_p)$.}
+            \label{fig:mixing_time_vs_log_vertices_eps0p05}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/mixing/mixing_time_vs_log_vertices_eps0p01.png}
+            \caption{Mixing times $t_{\mix}(0.01)$ plotted against increasing $\log(N_p)$.}
+            \label{fig:mixing_time_vs_log_vertices_eps0p01}
+        \end{figure}
+
+        Finally, in Figure \ref{fig:tv_distance_curves}, we observe the total variation distance $d_{\TV}(P_n, U)$ plotted against increasing step count $n$, in the cases of the curves $p=4789$ and $p=9973$ with $l \in \curly{2,3,5}$. Here there appears to be a very clear, linear decline in $d_{\TV}(P_n, U)$ in all cases, up to a point at which the curve appears to reach a `floor' and the curve plateaus. We see in these examples that higher $\ell$ appears to correspond with a faster convergence of $\ell$ toward $0$.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/mixing/tv_distance_curves.png}
+            \caption{Values of the total variation distance $d_{\TV}(P_n, U)$ plotted against increasing step count $n$, in the cases of the curves $p=4789$ and $p=9973$ with $l \in \curly{2,3,5}$.}
+            \label{fig:tv_distance_curves}
+        \end{figure}
+
+        Following the definiton of the total variation distance, we see that this plot demonstrates rapid convergence of random walks toward the uniform distribution. It can be suggested that the point at which each curve appears to plateau indicates the number of steps after which random walks are adequately mixed, with further steps providing negligible mixing benefit.
+    
+    \section{Random walks and empirical total variation distance}
+        In the preceding section, we used numerical computation of the probability distribution $P_n$ to ascertain mixing times and total variation distances according to standard analytical tools. However, it is also often informative to see results such as these illustrated by concrete examples. To this end, we have produced a sample of random walks, from which we derive a Monte-Carlo illustration of mixing over supersingular isogeny graphs.
+
+        We simulated for each $l \in \curly{2,3,5}$ and $p \in \curly{4789, 9973}$ a sample of $5000$ random walks for lengths 
+        \begin{equation*}
+            n \in \curly{1, 2, 3, 5, 10, 20, 30, 50}.
+        \end{equation*}
+        From this we obtained for each above $n$ an empirical probability distribution
+        \begin{equation*}
+            \hat{P}_n(i) = \frac{\# \text{sampled walks ending at vertex } i}{\#\text{sampled walks}},
+        \end{equation*}
+        using which we were able to compute an \textit{empirical} total variation distance $d_{\TV}(\hat{P}_n, U)$. The curve of this value against increasing walk lengths is shown in Figure \ref{fig:empirical_tv_distance}.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/random_walks/empirical_tv_distance.png}
+            \caption{Values of the empirical total variation distance $d_{\TV}(\hat{P}_n, U)$, plotted against number of steps $n$.}
+            \label{fig:empirical_tv_distance}
+        \end{figure}
+
+        In Figure \ref{fig:empirical_tv_distance}, we see that the empirical total variation distance declines monotonically in all the sampled cases $p$ and $\ell$. While not matching Figure \ref{fig:tv_distance_curves} precisely, this is to be expected due to noise in finite samples. While we will prefer the analytical values obtained in \ref{fig:tv_distance_curves} for accuracy, these empirical plots provide qualitative corroboration of the general phenomena at hand.
+
+        Additionally, for each of the selected representative graphs, we computed $5000$ random walks of length $50$ steps, all from a common initial vertex for each graph, in order to obtain an empirical estimate for the frequency of each vertex as an endpoint. If it is true that after $50$ steps the random walks have adequately mixed, each histogram should show something resembling a uniform distribution with height $1/N_p$ at each point. Excepting some noise, this appears to be what we observe in Figures \ref{fig:endpoint_histogram_p4789_l2} to \ref{fig:endpoint_histogram_p9973_l5}, where in each case the expected values for a uniform distribution have been marked by a horizontal dotted line.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/random_walks/endpoint_histogram_p4789_l2.png}
+            \caption{Histogram of endpoints for random walks on $G_\ell^s(\F_{p^2})$ after $50$ steps, for $p = 4789$ and $\ell = 2$.}
+            \label{fig:endpoint_histogram_p4789_l2}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/random_walks/endpoint_histogram_p4789_l5.png}
+            \caption{Histogram of endpoints for random walks on $G_\ell^s(\F_{p^2})$ after $50$ steps, for $p = 4789$ and $\ell = 5$.}
+            \label{fig:endpoint_histogram_p4789_l5}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/random_walks/endpoint_histogram_p9973_l3.png}
+            \caption{Histogram of endpoints for random walks on $G_\ell^s(\F_{p^2})$ after $50$ steps, for $p = 9973$ and $\ell = 3$.}
+            \label{fig:endpoint_histogram_p9973_l3}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/random_walks/endpoint_histogram_p9973_l5.png}
+            \caption{Histogram of endpoints for random walks on $G_\ell^s(\F_{p^2})$ after $50$ steps, for $p = 9973$ and $\ell = 5$.}
+            \label{fig:endpoint_histogram_p9973_l5}
+        \end{figure}
+
+    \section{Comparing the exact and empirical total variation distances}
+        Finally, we will like to compare the total variation distances obtained using the exact and empirical means. The same qualitative phenomena were observed for graphs with both $p=4789$ and $p=9973$, so we will attach only the latter for brevity.
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/random_walks/exact_vs_empirical_tv_p9973_l2.png}
+            \caption{Comparison of empirical and exact total variation distances for $p = 9973$ and $\ell = 2$.}
+            \label{fig:exact_vs_empirical_tv_p9973_l2}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/random_walks/exact_vs_empirical_tv_p9973_l3.png}
+            \caption{Comparison of empirical and exact total variation distances for $p = 9973$ and $\ell = 3$.}
+            \label{fig:exact_vs_empirical_tv_p9973_l3}
+        \end{figure}
+
+        \begin{figure}[H] % sizing?
+            \centering
+            \includegraphics[width=0.6\linewidth]{figures/plots/random_walks/exact_vs_empirical_tv_p9973_l5.png}
+            \caption{Comparison of empirical and exact total variation distances for $p = 9973$ and $\ell = 5$.}
+            \label{fig:exact_vs_empirical_tv_p9973_l5}
+        \end{figure}
+
+        Here, in Figures \ref{fig:exact_vs_empirical_tv_p9973_l2}, \ref{fig:exact_vs_empirical_tv_p9973_l3} and \ref{fig:exact_vs_empirical_tv_p9973_l5}, we observe an interesting discrepancy. While for $\ell=2$ it appears that the exact and empirical total variation distances are fairly aligned, as $\ell$ increases to values $3$ and $5$, the empirical values slowly peel upwards, failing to follow the downward pattern followed by the exact curve. I am not yet certain why this is the case, except that I hypothesise this is related to having inadequately large samples. Indeed, we have sampled $5000$ random walks, but $N_{9973} = 831$. Therefore, we expect on average that each vertex has been sampled only $5000/831 \approx 6.02$ times. This is, despite our efforts, still quite a small sample. For the case that $p=4789$, we still have $N_{4789} = 399$, and therefore expect each vertex to have been visited an average of $5000/399 \approx 12.53$ times. This is an improvement over the case that $p=9973$, but still potentially inadequate for strong estimates.
+
+        However, even if this discrepancy can be attributed to inadequate sample sizes, it fails to explain the consistent trend observed across our selected samples that the empirical total variation distance peels \textit{upwards} from the exact total variation distance curve, rather than having symmetric error about the expected value. I speculate that an explanation for this effect will require mathematical examination of the total variation distance.
+
