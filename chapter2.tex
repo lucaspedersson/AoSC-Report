@@ -1,4 +1,6 @@
 \chapter{Mathematical Background}\label{ch:mathematical_background}
+    This chapter will cover some of the relevant concepts and vocabulary for this project, as well as an outline of the properties we will wish to assess. While some background in group theory is assumed, we aim to remain light on technicalities, focusing mainly on the key terms required to understand the problem at hand. The interested reader may consult \cite{isogeny_school1}, \cite{de_feo2017}, or \cite{isogeny_school3} for further information; indeed, the following can be treated as an abbreviated summary of these sources. The sections on spectral graph theory, and on random walks and mixing times, are drawn from \cite{GPS17}.
+
     \section{Elliptic curves}
         The definition of elliptic curve can be rendered in various equivalent forms. For instance, as per \cite{silverman}, we could define an elliptic curve $E$ over a field $K$ as a non-singular projective algebraic curve of genus $1$ having a distinguished $K$-rational point $O \in E$. But, we are interested in elliptic curves with a view to computation, and therefore give a simpler definition, more tractable for our purposes.
 
@@ -29,19 +31,161 @@
         Key to the theory of elliptic curves is the fact that it is possible to define a group operation (conventionally called a \textit{group law}) on the points of $E$, satisfying certain desirable properties. The definition of this operation arises from projective geometry, whose details we defer to a reference such as \cite{silverman}. For our purposes, it will suffice to understand that any elliptic curve has a group structure.
 
         \begin{definition}[Group Law]
-            Let $E$ be an elliptic curve over a field $K$. It is a consequence of B\'ezout's theorem that under mild assumptions and counting multiplicity, an algebraic curve of degree $n$ and an algebraic curve of degree $m$ will intersect in $nm$ points. Since an elliptic curve has degree $3$ and a line has degree $1$, it follows that the line spanned by two points $P,Q \in E$ will intersect $E$ at a unique third point $R' \in E$. We let $R \in E$ be the reflection of $R'$ over the $x$-axis and define a \textit{group law} $P \oplus Q = R$, such that $(E,\oplus)$ forms an abelian group. (For details, see \cite{silverman}.)
+            Let $E$ be an elliptic curve over a field $K$. It is a consequence of B\'ezout's theorem that under mild assumptions and counting multiplicity, an algebraic curve of degree $m$ and an algebraic curve of degree $n$ will intersect in $mn$ points. Since an elliptic curve has degree $3$ and a line has degree $1$, it follows that the line spanned by two points $P,Q \in E$ will intersect $E$ at a unique third point $R' \in E$. We let $R \in E$ be the reflection of $R'$ over the $x$-axis and define a \textit{group law} $P \oplus Q = R$, such that $(E,\oplus)$ forms an abelian group. (For details, see \cite{silverman}.)
         \end{definition}
-
-    \textbf{STILL IN PROGRESS}
         
     \section{Isogenies}
-        Definition of elliptic curve isogenies, the degree of an isogeny, the relationship between an isogeny and its kernel, and computational aspects such as V\'elu's formulas.
+        If $E_1$ and $E_2$ are elliptic curves over a common field $K$, then a morphism of elliptic curves is a rational map $f \colon E_1 \to E_2$. Loosely, this can be understood as a map defined by rational functions. However, we will be interested in a more restrictive notion of mapping between elliptic curves, namely \textit{isogeny}.
+
+        \begin{definition}[Isogeny]
+            Let $E_1$ and $E_2$ be elliptic curves over a common field $K$. An \textit{isogeny} of elliptic curves is a morphism $f \colon E_1 \to E_2$ which is also a surjective group homomorphism with respect to the group structures on $E_1$ and $E_2$.
+        \end{definition}
+
+        Isogenies provide a notion of mapping between elliptic curves which respects both the geometric and arithmetic structures of the curve, and which can therefore encode useful information about the curves thereby related. We will enumerate some useful properties.
+
+        \begin{definition}[Elliptic curve isomorphism]
+            An isogeny $f \colon E_1 \to E_2$ is called an \textit{isomorphism} if it is an isomorphism of the underlying groups in $E_1$ and $E_2$.
+        \end{definition}
+
+        \begin{definition}[Degree of an isogeny]
+            Suppose an isogeny $f \colon E_1 \to E_2$ is separable\footnote{For our purposes, all isogenies will be separable. The reader can therefore, if so desired, treat this condition as a technicality.}. Then $f$ has a quantity called the \textit{degree}, denoted by $\deg(f)$, which can be computed by $\deg(f) = \abs{\ker(f)}$.
+        \end{definition}
+
+        In fact, over suitable fields, the kernel of an isogeny will uniquely determine that isogeny. 
+
+        We next consider the possibility of defining an isogeny between a curve and itself.
+
+        \begin{definition}[The endomorphism ring]
+            Let $E$ be an elliptic curve over a field $K$. An isogeny $f \colon E \to E$ is called an endomorphism of $E$. The set $\End(E)$ of all endomorphisms of $E$, including also the zero morphism $0 \colon E \to E$, forms a ring where addition is defined pointwise and multiplication is defined to be the composition operation. That is, $fg = f \circ g$ and for $f,g \in \End(E)$ we define $f + g$ to be the isogeny $x \mapsto f(x) + g(x)$. The resulting ring $\End(E)$ is called the \textit{endomorphism ring of $E$}.
+        \end{definition}
+
+        Since any elliptic curve $E$ forms an abelian group, we can define integer multiplication of points on the curve using the additive group structure. Then, it holds for any elliptic curve $E$ that the multiplication-by-$n$ map $x \mapsto nx$ is an endomorphism $[n] \colon E \to E$. So, for any elliptic curve $E$, $\End(E)$ has a subring isomorphic to $\Z$.
+
+    \section{Ordinary and supersingular}
+        Elliptic curves over finite fields can be distinguished as either \textit{ordinary} or \textit{supersingular}. Ordinary elliptic curves form well understood structures; we will be interested in the alternate, supersingular case.
+
+        \begin{definition}
+            Let $E$ be an elliptic curve over a finite field $K$. If $\End(E)$ is isomorphic to an order in an imaginary quadratic field $\Q(\sqrt{-d})$, we say that $E$ is \textit{ordinary}. In this case, $\End(E)$ is commutative.
+
+            If instead $\End(E)$ is isomorphic to an order in a quaternion algebra, we say that $E$ is \textit{supersingular}. In this case, $\End(E)$ is non-commutative.
+        \end{definition}
+
+        All elliptic curves over finite fields are either ordinary or supersingular, and we see that supersingular curves can be distinguished by having larger endomorphism rings. This can be understood, morally, as indicating that supersingular elliptic curves have more complex internal structure.
+
+        \begin{property}
+            Over any field of characteristic $p$, if $E$ is a supersingular elliptic curve then the $j$-invariant $j(E)$ is defined over $\F_{p^2}$. And, there are $N_p = \floor{\frac{p}{12}} + \varepsilon_p$ such supersingular elliptic curves over characteristic $p$, where $\varepsilon_p = 0,1,1,2$ corresponding to the cases that $p \equiv 1,5,7,11 \pmod{12}$ respectively.
+        \end{property}
+
+        Supersingular elliptic curves are named so because they are singular in the sense of rarity; over any field, few supersingular elliptic curves exist compared to ordinary elliptic curves.
+
+    \section{The \texorpdfstring{$j$}{j}-invariant}
+        Isomorphisms are typically regarded as providing a notion of \textit{equivalence}; if two objects are isomorphic within some category, then their properties within that category must be identical. So, we are often interested in classifying objects \textit{up to isomorphism}. For elliptic curves, isomorphism classes of elliptic curves have a convenient classification by the \textit{$j$-invariant}. This invariant has a more general definition, but we give a specific form applicable to curves expressed by Weiestrass equations.
+
+        \begin{definition}[$j$-invariant]
+            Let $E$ be an elliptic curve over a field $K$, and assume that $E$ is given by the Weierstrass equation $y^2 = x^3 + ax + b$. Then the \textit{$j$-invariant} of $E$ is
+            \begin{equation*}
+                j(E) = 1728\frac{4a^3}{4a^3 + 27b^2}.
+            \end{equation*}
+        \end{definition}
+
+        When the base field $K$ is algebraically closed, such as in the case that $K = \C$, then two elliptic curves $E_1, E_2$ over $K$ are isomorphic if and only if $j(E_1) = j(E_2)$. So, in this case, the $j$-invariant classifies all elliptic curves up to isomorphism.
+
+        Later we will consider elliptic curves over $\F_{p^2}$, where $p$ is prime. In this case, although $\F_{p^2}$ is not algebraically closed, every supersingular elliptic curve has its $j$-invariant defined as an element of $\F_{p^2}$, and therefore the $j$-invariant can still be used as a classification of isomorphism classes in the algebraic closure of $\F_{p^2}$.
 
     \section{Supersingular \texorpdfstring{$\ell$}{l}-isogeny graphs}
-        Definition of supersingular isogeny graphs. Some discussion of their spectral and mixing properties as described in existing literature.
+        An \textit{isogeny graph} is, in general, a graph whose vertices correspond to isomorphism classes of elliptic curves, and whose edges are isogenies between those (isomorphism classes of) elliptic curves. We are interested in certain \textit{supersingular} isogeny graphs, whose edges are restricted to isogenies of common fixed degree. 
 
-    \section{Basic spectral graph theory}
-        Basic notions of spectral graph theory, particularly the spectral gap.
+        \begin{definition}[$\ell$-isogeny graphs]
+            Let $K$ be a field. For $\ell \in \Z_{\geq 0}$, the $\ell$-isogeny graph over $K$ is the graph $G_\ell(K)$ whose vertices are isomorphism classes of elliptic curves over $K$, and whose edges are $\ell$-isogenies (i.e. isogenies of degree $\ell$).
+        \end{definition}
+
+        We will hereafter restrict our attention to the case that $K = \F_{p^2}$, where $p \in \Z$ is prime. In this case, the supersingular elliptic curves over $\F_{p^2}$ form a connected component within $G_\ell(\F_{p^2})$, having approximately $p/12$ vertices. As we will see, this graph has many desirable properties.
+
+        \begin{definition}[Supersingular $\ell$-isogeny graphs]
+            Let $\ell, p \in \Z$ be primes such that $\ell \neq p$. The set of supersingular elliptic curves over $\F_{p^2}$ forms a connected component within $G_\ell(\F_{p^2})$, and is called the \textit{supersingular $\ell$-isogeny graph over $\F_{p^2}$}, or alternatively the \textit{supersingular component of $G_\ell(\F_{p^2})$}.
+        \end{definition}
+
+        \begin{property}
+            Any supersingular $\ell$-isogeny graph over $\F_{p^2}$ is finite, connected and $(\ell+1)$-regular.
+        \end{property}
+
+    \section{Spectral graph theory}
+        Spectral graph theory pursues the insight that the various matrices associated with a graph, such as the adjacency matrix, encode in their eigenvalue spectra useful information pertaining to their underlying graphs.    
+
+        \begin{definition}[Adjacency matrix]
+            Let $G$ be a graph with vertex set $V = \curly{v_1, \dots, v_n}$ and edge set $E$. The adjacency matrix of $G$ is the $n \times n$ matrix $A$ whose $(i,j)$-th entry $a_{ij}$ is equal to the number of edges in $E$ beginning at $v_i$ and ending at $v_j$.
+        \end{definition}
+
+        It is a simple result of linear algebra that if the adjacency matrix $A$ of a graph is symmetric, then its eigenvalues are all real. In particular, this will hold for either undirected graphs, or for symmetric directed graphs. 
+
+        \begin{definition}[Ramanujan graph]
+            Suppose $G$ is a connected, $k$-regular graph with $n$ vertices and adjacency matrix $A$. Suppose the eigenvalues $\lambda_1, \dots, \lambda_n$ are sorted by decreasing absolute value,
+            \begin{equation*}
+                \abs{\lambda_1} \geq \abs{\lambda_2} \geq \cdots \geq \abs{\lambda_{n-1}} \geq \abs{\lambda_n}.
+            \end{equation*}
+            Then $G$ is a \textit{Ramanujan graph} if 
+            \begin{equation*}
+                \abs{\lambda_2} \leq 2\sqrt{k-1}.
+            \end{equation*}
+        \end{definition}
+
+        In particular, in the case that $G$ has symmetric adjacency matrix $A$, the eigenvalues of $A$ satisfy
+        \begin{equation*}
+            k = \lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_{n-1} \geq \lambda_n \geq -k.
+        \end{equation*}
+        Now, recalling that the supersingular $\ell$-isogeny graph over $\F_{p^2}$ is connected and $(\ell+1)$-regular, we have the following property.
+
+        \begin{property}
+            The supersingular $\ell$-isogeny graph over $\F_{p^2}$ is a Ramanujan graph, satisfying
+            \begin{equation*}
+                \abs{\lambda_2} \leq 2\sqrt{\ell}.
+            \end{equation*}
+        \end{property}
 
     \section{Random walks and mixing times}
-        Introduction to the notions of random walks and their mixing times.
+        We have seen that supersingular $\ell$-isogeny graphs over $\F_{p^2}$ are Ramanujan graphs. The most important consequence of this property is that random walks on these graphs have optimal mixing times.
+
+        \begin{definition}[Random walk]
+            Let $G$ be a graph. Supposing a vertex $v$ of $G$ has at least one outgoing edge, a \textit{random step} on this graph starting $v$ is a uniformly random choice from the set of neighbours of $v$ (possibly including $v$ itself, in the case that $G$ contains self-loops). A \textit{random walk} on $G$ is a finite or countable sequence of random steps.
+        \end{definition}
+
+        It follows from the fact that supersingular $\ell$-isogeny graphs are Ramanujan graphs that they satisfy the following essential property (see \cite[Theorem 1]{GPS17} for proof).
+
+        \begin{property}[Random walk theorem]
+            Let $j_0$ be the $j$-invariant corresponding to a supersingular elliptic curve in $\F_{p^2}$ and let $j$ be the $j$-invariant corresponding to the final point reached after a random walk of $n$ steps in the supersingular $\ell$-isogeny graph. Then for every $j' \in \F_{p^2}$ we have
+            \begin{equation*}
+                \abs{\Pr(j = j') - \frac{1}{N_p}} \leq \brac{\frac{2\sqrt{\ell}}{\ell+1}}^n.
+            \end{equation*} 
+        \end{property}
+
+        Indeed, the stationary distribution for random walks on any $k$-regular graph converges to the uniform distributon, and the above theorem guarantees that for supersingular $\ell$-isogeny graphs, the rate of this convergence is exponential, increasing with greater $\ell$.
+
+        In light of this, let us consider a random walk on a supersingular $\ell$-isogeny graph beginning at $j$-invariant $j_0$. Defining $P_k \in \R^{N_p}$ to be the row vector with a $1$ in the $k$-th entry and zeroes in every other entry, and defining
+        \begin{equation*}
+            P_n(i) = \Pr(\text{walk is at } j_i \text{ after } n \text{ steps}),
+        \end{equation*}
+        we find that the vectors $P_n$ for $n \geq 0$ describe the probability distributions for the destinations of random walks on this graph after $n$ steps. 
+        
+        Now, it is a standard result of the theory of discrete-time Markov chains that our random walk probability distribution evolves according to the rule $P_{n+1} = P_n M$ where $M = \frac{1}{1 + \ell}A$, given that $A$ is the adjacency matrix of our supersingular $\ell$-isogeny graph. In particular, it follows that $P_n = P_0 M^n$.
+        
+        Our claim is that $P_n$ converges to the following uniform distribution in a suitable sense.
+        
+        \begin{definition}[Uniform distribution]
+            Recall that a supersingular $\ell$-isogeny graph has $N_p$ vertices. So, for any $j$-invariant $j_i$ in this graph, the uniform distribution assigns to $j_i$ the probability $U(i) = \frac{1}{N_p}$.
+        \end{definition}
+
+        Our preferred measure of convergence will be the following.
+        \begin{definition}[Total variation distance]
+            The \textit{total variation distance} between the probability distributions $P_n$ and $U$ is defined by
+            \begin{equation*}
+                d_{TV} = \frac{1}{2}\sum_{i=1}^{N_p} \abs{P_n(i) - \frac{1}{N_p}}.
+            \end{equation*}
+        \end{definition}
+        This can be quantified by the following \textit{mixing time}, which we will later numerically analyse.
+        \begin{definition}[Mixing time]
+            For $\varepsilon > 0$, the \textit{mixing time} $t_{\mix}(\varepsilon)$ quantifies convergence of $P_n$ to $U$ using
+            \begin{equation*}
+                t_{\mix}(\varepsilon) = \min\curly{n \geq 0 \mid d_{\TV}(P_n, U) \leq \varepsilon}.
+            \end{equation*}
+        \end{definition}
+        

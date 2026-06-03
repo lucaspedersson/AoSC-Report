@@ -1,28 +1,50 @@
-\chapter{Computational Implementation}\label{ch:computational_implementation}
-
-    I haven't quite gotten around to writing this up but I promise I do have working code. Attached are some sample supersingular isogeny graphs I have produced; I have begun analysing these but have yet to write out my results.
-
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.5\linewidth, angle=90]{figures/193graph.png}
-        \caption{Supersingular $2$-isogeny graph over the finite field $F_{193^2}$.}
-        \label{fig:193graph}
-    \end{figure}
-
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.5\linewidth, angle=90]{figures/757graph.png}
-        \caption{Supersingular $2$-isogeny graph over the finite field $F_{757^2}$.}
-        \label{fig:757graph}
-    \end{figure}
-
+\chapter{Computation}\label{ch:computation}
     \section{Elliptic curves in Sage}
-        Introduction to the Sage software package and its facilities for elliptic curve operations.
+        Sage is a software package built atop Python which is widely used in mathematical research for algebraic computation. Its facilities include:
+        \begin{itemize}
+            \item representing finite fields as Python objects;
+            \item representing elliptic curves as Python objects;
+            \item testing elliptic curves for supersingularity;
+            \item computing isogenies between elliptic curves;
+            \item computing $j$-invariants corresponding to elliptic curves;
+            \item graph structures;
+        \end{itemize}
+        and more, which will be relevant to our use case. In our project, we will use Sage to handle heavier algebraic operations so that we can focus on the relevant computational research questions.
 
-    \section{Generating \texorpdfstring{$\ell$}{l}-isogeny graphs}
+    \section{Generating supersingular \texorpdfstring{$\ell$}{l}-isogeny graphs}
+
+        In constructing supersingular $\ell$-isogeny graphs, we would like vertices to represent isomorphism classes of supersingular elliptic curves over $\F_{p^2}$. But, we have seen that (up to certain technical details), each such isomorphism class is uniquely specified by a $j$-invariant, taking a value in $\F_{p^2}$. So, rather than using any concrete representation of an elliptic curve, we can perform all our required elliptic curve operations in terms of values in $\F_{p^2}$, namely $j$-invariants. Indeed, given a value \verb|j_val| in a Sage finite field $\F_{p^2}$, one obtains a Boolean
+\begin{lstlisting}[language=Python]
+    EllipticCurve(j=j_val).is_supersingular()
+\end{lstlisting}
+        corresponding to whether a supersingular elliptic curve over $\F_{p^2}$ exists having $j$-invariant equal to \verb|j_val|. So, $j$-invariants will provide vertex representations for our isogeny graphs.
+
+        Now, since the supersingular $\ell$-isogeny graph is known to be connected, it will suffice to first identify one supersingular $j$-invariant over $\F_{p^2}$, and then to perform a graph traversal to compute the rest of the graph. In our implementation, we have chosen to use a breadth-first search.
+
+        It still remains to understand, however, how we will compute the isogeny-neighbours of any such $j$-invariant. That is, given a $j$-invariant $j_0$ known to lie in our graph, how will we find the set of $j$-invariants $j_i$ for $i=1,\dots,\ell+1$ such that there exists an isogeny $j_0 \to j_i$? There are two main options before us.
+
+        First, recall that in suitable (`separable') cases it is possible uniquely determine an isogeny by its kernel. And, since any isogeny $f \colon E_1 \to E_2$ is a group homomorphism, this kernel is a subgroup of $E_1$; it follows that an isogeny can be identified by finding the generators of its kernel. Supposing this can be done, one may use \textit{V\'elu's formulas} to compute explicitly the elliptic curve $E_2$ which is the image of an isogeny $f$ having the specified kernel. And, indeed, the facilities for this are provided in Sage. But, this will typically be more computationally expensive than we desire, especially since an initial sampling process is required in order to find generators for suitable subgroups in $E_1$.
+
+        So, we will instead use an algebraic device known as the \textit{modular polynomial}. This is an integer valued polynomial in two variables $\Phi_\ell \in \Z[X,Y]$ such that $(X,Y)$ is a root of $\Phi$ if and only if there exists an $\ell$-isogeny between elliptic curves $E_1 \to E_2$ such that $j(E_1) = X$ and $j(E_2) = Y$. In the case that we consider $j$-invariants over finite fields such as $\F_{p^2}$, the same result is obtained by evaluating $\Phi_\ell(X,Y)$ over that field instead. So, suppose we know at least one $j$-invariant, say $j_0$, lying in our graph. In order to compute its $\ell$-isogeny neighbours then, it will suffice to find the roots of the polynomial $\Phi_\ell(j_0, Y)$. Indeed, in sage one can construct the modular polynomial by writing the following.
+\begin{lstlisting}[language=Python]
+    Phi = classical_modular_polynomial(Integer(l))
+\end{lstlisting}
+        Then, for any known $j$-invariant \texttt{j1} lying in our graph, we can construct a polynomial
+\begin{lstlisting}[language=Python]
+    poly_y = Phi(j1, Y)
+\end{lstlisting}
+        and find the neighbouring $j$-invariants of \verb|j1| by computing the roots of \verb|poly_y|, enumerating as follows.
+\begin{lstlisting}[language=Python]
+    for j2, mult in poly_y.roots():
+        . . .
+\end{lstlisting}
+    This will be our instrument for finding the neighbours of any vertex in our isogeny graph. 
+
+    Now that we have established representations for the vertices in our graph, as well as for computing the neighbours of any vertex in our graph, there remain two computational steps. The first is to identify at least one initial supersingular $j$-invariant over $\F_{p^2}$, and the second is to perform a graph traversal beginning at that initial $j$-invariant. But, since $\F_{p^2}$ contains precisely $p^2$ elements, for moderate $p$ it will be possible simply to enumerate the elements of $\F_{p^2}$, and check each element for supersingularity as a $j$-invariant. Once an example is found, we can perform a breadth-first search using the modular polynomial to find neighbouring vertices in order to produce the entire supersingular $\ell$-isogeny graph.
+
+    \section{An aside on exceptional \texorpdfstring{$j$}{j}-invariants}
+        We earlier claimed that for any prime $p$ and any prime $\ell \neq p$, the supersingular $\ell$-isogeny graph is $(\ell+1)$-regular. This is true with a minor caveat: for some primes $p$, the elliptic curves having $j$-invariants $0$ or $1728$ may be supersingular, and may therefore be elements of our graph. But, these two (isomorphism classes of) elliptic curves are known to be exceptional, being the only two elliptic curves possessing what are known as `extra automorphisms'. Consequently, if these are elements in our graph, the graph will fail to be $(\ell+1)$-regular at these two points. Computationally this is minimally consequential, but for simplicity we will prefer to avoid this case altogether. 
+
+        Now, it is known that the $j$-invariant $0$ is supersingular over $\F_{p^2}$ if and only if $p \equiv 2 \pmod{3}$, and that the $j$-invariant $1728$ is supersingular over $\F_{p^2}$ if and only if $p \equiv 3 \pmod{4}$. So, to avoid these cases, we will perform our experiments specialising to the cases that $p$ is a prime with $p \equiv 1 \pmod{12}$. To do this, we will write a function \verb|first_n_suitable_primes| which returns a list of the first $n$ primes which are congruent to $1$ modulo $12$, beginning with $13$. This function will be computed by simple enumeration, using primality checking provided by Sage.
 
     \section{Computing eigenvalue spectra}
-
-    \section{Generating random walks}
-
-    \section{Computing mixing times}
